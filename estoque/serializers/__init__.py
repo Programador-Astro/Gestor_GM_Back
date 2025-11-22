@@ -1,0 +1,3 @@
+from .produto_serializer import ProdutoSerializer
+from .insumo_serializer import InsumoSerializer
+from .movimentacao_serializer import MovimentacaoEstoqueSerializer

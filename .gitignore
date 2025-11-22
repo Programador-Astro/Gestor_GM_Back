@@ -1,0 +1,84 @@
+# =========================================
+#  PYTHON
+# =========================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtualenv
+venv/
+env/
+ENV/
+
+# Distribuição / build
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# =========================================
+#  DJANGO / DRF
+# =========================================
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+
+# Media / static generated
+media/
+staticfiles/
+static/
+
+# Local Django settings
+local_settings.py
+
+# Migrations compiladas (mantemos apenas __init__.py)
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# =========================================
+#  DOCKER
+# =========================================
+docker-compose.override.yml
+.docker/
+*.pid
+
+# =========================================
+#  SISTEMAS OPERACIONAIS
+# =========================================
+.DS_Store
+Thumbs.db
+
+# =========================================
+#  IDEs / EDITORES
+# =========================================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# =========================================
+#  SECRETS / CONFIG
+# =========================================
+.env
+*.env
+.env.*
+!example.env
+
+# =========================================
+#  CACHE
+# =========================================
+.cache/
+pytest_cache/
+pip-log.txt
+pip-delete-this-directory.txt
