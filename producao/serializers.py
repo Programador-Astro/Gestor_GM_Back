@@ -13,13 +13,13 @@ class ItemProducaoDiariaSerializer(serializers.ModelSerializer):
             "produto",
             "produto_nome",
             "quantidade_esperada",
-            "quantidade_conferida",
+            "quantidade_conferida_producao",
+            "quantidade_conferida_camara",
             "status",
             "criado_em",
             "atualizado_em",
         ]
         read_only_fields = ["status"]
-
 
 class ProducaoDiariaSerializer(serializers.ModelSerializer):
     itens = ItemProducaoDiariaSerializer(many=True, read_only=True)

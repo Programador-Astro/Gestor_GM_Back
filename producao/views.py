@@ -19,20 +19,56 @@ class ItemProducaoDiariaViewSet(viewsets.ModelViewSet):
     queryset = ItemProducaoDiaria.objects.all()
     serializer_class = ItemProducaoDiariaSerializer
 
-    def create(self, request, *args, **kwargs):
-        producao = request.data.get("producao")
-        produto = request.data.get("produto")
-
-        # Evitar duplicação do mesmo item
-        if ItemProducaoDiaria.objects.filter(producao=producao, produto=produto).exists():
+    def update(self, request, *args, **kwargs):
+        item = self.get_object()
+        
+        # 🔥 BLOQUEIA EDIÇÃO SE PRODUÇÃO FINALIZADA
+        if item.producao.status == "FINALIZADO":
             return Response(
-                {"erro": "Esse produto já foi adicionado na produção diária."},
+                {"erro": "Produção finalizada. Não é possível editar itens."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        item = self.get_object()
+
+        # 🔥 BLOQUEIA PATCH TAMBÉM
+        if item.producao.status == "FINALIZADO":
+            return Response(
+                {"erro": "Produção finalizada. Não é possível editar itens."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        item = self.get_object()
+
+        # 🔥 BLOQUEIA DELETE
+        if item.producao.status == "FINALIZADO":
+            return Response(
+                {"erro": "Produção finalizada. Não é possível remover itens."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return super().destroy(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        producao_id = request.data.get("producao")
+        from producao.models import ProducaoDiaria
+
+        producao = ProducaoDiaria.objects.get(pk=producao_id)
+
+        # 🔥 BLOQUEIA CRIAÇÃO DE NOVO ITEM
+        if producao.status == "FINALIZADO":
+            return Response(
+                {"erro": "Produção finalizada. Não é possível adicionar itens."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         return super().create(request, *args, **kwargs)
-
-
 
 @api_view(["POST"])
 def finalizar_producao_view(request, pk):

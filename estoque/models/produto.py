@@ -19,6 +19,8 @@ class Produto(models.Model):
     categoria = models.CharField(max_length=50)       # Açaí, Creme, etc
 
     estoque_atual = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    estoque_ideal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    estoque_minimo = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     ativo = models.BooleanField(default=True)
 

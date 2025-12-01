@@ -33,7 +33,8 @@ class ItemProducaoDiaria(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
 
     quantidade_esperada = models.DecimalField(max_digits=10, decimal_places=2)
-    quantidade_conferida = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    quantidade_conferida_producao = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    quantidade_conferida_camara = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     status = models.CharField(max_length=20, choices=STATUS_ITEM, default="PENDENTE")
 
