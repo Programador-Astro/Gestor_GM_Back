@@ -1,6 +1,5 @@
 from django.db import transaction
 
-
 def finalizar_producao(producao):
 
     if producao.status == "FINALIZADO":
@@ -10,40 +9,46 @@ def finalizar_producao(producao):
     if not itens.exists():
         raise Exception("A produção não possui itens para finalizar.")
 
-    # ✔️ Verifica divergência antes de abrir a transação
+    # --------------------------------------------
+    # ✔️ VALIDAÇÃO COMPLETA ANTES DE FINALIZAR
+    # --------------------------------------------
     divergentes = []
+
     for item in itens:
         esperado = item.quantidade_esperada
-        conferido = item.quantidade_conferida_producao
+        prod = item.quantidade_conferida_producao or 0
+        cam = item.quantidade_conferida_camara or 0
 
-        if esperado != conferido:
+        if esperado != prod or esperado != cam:
             divergentes.append({
                 "produto": item.produto.nome,
                 "esperado": float(esperado),
-                "conferido": float(conferido)
+                "producao": float(prod),
+                "camara": float(cam)
             })
 
+    # Se houver um único item divergente → NÃO finaliza
     if divergentes:
         raise Exception({
             "erro": "Existem itens divergentes. A produção não pode ser finalizada.",
             "itens": divergentes
         })
 
-    # ✔️ Só atualiza estoque se TUDO estiver correto
+    # --------------------------------------------
+    # ✔️ TUDO VALIDO → FINALIZA OFICIALMENTE
+    # --------------------------------------------
     with transaction.atomic():
         for item in itens:
-            esperado = item.quantidade_esperada
             conferido = item.quantidade_conferida_producao
 
-            # Todos iguais → status OK
+            # Marca status como OK (já passou nas validações)
             item.status = "OK"
+            item.save()
 
-            # Entrada real no estoque
+            # Atualiza estoque
             produto = item.produto
             produto.estoque_atual += conferido
             produto.save()
-
-            item.save()
 
         producao.status = "FINALIZADO"
         producao.save()
