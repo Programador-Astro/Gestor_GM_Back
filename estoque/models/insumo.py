@@ -7,7 +7,7 @@ class Insumo(models.Model):
         ('ING', 'Ingrediente'),
         ('OUT', 'Outro'),
     ]
-
+    on_delete=models.CASCADE,
     nome = models.CharField(max_length=255)
     codigo = models.CharField(max_length=30, unique=True)
     unidade_medida = models.CharField(max_length=20)
